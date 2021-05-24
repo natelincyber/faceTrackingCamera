@@ -32,14 +32,9 @@ class IPWEBCAM(object):
         return img
 
 
-    def get_image_string(self,img):
-        # return the image as a string, but also give out its shape(width,height) and color_space
-        return (img.tostring(), img.shape[1::-1], 'RGB')
-
-
     def swap_camera(self, option):
         # swap the camera from thte back to the front
-        # option: on / off
+        # option: on - front camera / off - rear camera
         return r.get(self.url+"/settings/ffc?set={}".format(option))
 
     def overlay(self, option):
@@ -49,6 +44,7 @@ class IPWEBCAM(object):
 
     def led(self, option):
         # turn on or off the flash light
+        # default: off
         if option =="on":
             return r.get(self.url+"/enabletorch")
         return r.get(self.url+"/disabletorch")
@@ -87,4 +83,4 @@ class IPWEBCAM(object):
             option = 0
         if option > 100:
             option = 100
-        return r.get(self.url + "/ptz?zoom=" + option)
+        return r.get(self.url + "/ptz?zoom=" + str(option))
