@@ -5,11 +5,8 @@ from ipwebcam import IPWEBCAM
 
 cameraIPAddress = '192.168.0.180:8080'
 
-ipcam = IPWEBCAM(cameraIPAddress)
-zoom = 0
 
-
-capturePort = cv2.VideoCapture('http://' + cameraIPAddress + '/video')
+capturePort = cv2.VideoCapture(f'http://{cameraIPAddress}/video')
 faceCascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
 while(True):
@@ -24,8 +21,8 @@ while(True):
 
 	cv2.imshow('video', frame)
 
-	if cv2.waitKey(0)  == 27:
-		break
+	if cv2.waitKey(1)  == 27:
+    		break
 
 capturePort.release()
 cv2.destroyAllWindows()
