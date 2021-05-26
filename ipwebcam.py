@@ -1,5 +1,4 @@
 import urllib
-import time
 import numpy as np
 import requests as r
 import cv2
