@@ -11,15 +11,17 @@ print("loading...")
 cameraIPAddress = '192.168.0.180:8080'
 
 ipcam = IPWEBCAM(cameraIPAddress)
-ipcam.zoom(0)
+
 capturePort = cv2.VideoCapture(f'http://{cameraIPAddress}/video')
 
 
 print(f"connected to: {cameraIPAddress}")
 
+targetZoom = int(input('zoom: '))
+
 
 faceCascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
-
+ipcam.zoom(0)
 
 while(True):
 	ret, frame = capturePort.read()
@@ -31,7 +33,7 @@ while(True):
 	if keyboard.is_pressed('w'):
     		ipcam.swap_camera("off")
 	if keyboard.is_pressed('z'):
-    		ipcam.zoom(20)
+    		ipcam.zoom(0)
 
 	# face detection
 	try:
@@ -47,18 +49,16 @@ while(True):
 		roi_gray = gray[y:y+h, x:x+w]
 		roi_color = frame[y:y+h, x:x+w]
 
-		targetZoom = 9000
 
 		if w*h < targetZoom:
-			print(w*h)
     		
 			diff = targetZoom - w*h
-			zoom = diff//330
+			zoomIn = diff//330
 			if targetZoom - w*h <= 1500:
-				print(w*h)
 				continue
 			else:
-				ipcam.zoom(zoom)
+				ipcam.zoom(zoomIn + 9)
+				print(f'{zoomIn * 330} {(zoomIn * 330) + (w*h)}')
 
 
 	cv2.imshow('video', frame)
