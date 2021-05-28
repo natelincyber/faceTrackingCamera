@@ -17,6 +17,8 @@ class IPWEBCAM(object):
                 "7" : "256x144",
                 "8" : "176x144"
                 }
+    def __str__(self):
+        return f"remote camera @{self.url[7:]}"
 
     def get_image(self):
         # Get our image from the phone

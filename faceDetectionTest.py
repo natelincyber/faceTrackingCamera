@@ -8,9 +8,10 @@ cameraIPAddress = '192.168.0.180:8080'
 
 capturePort = cv2.VideoCapture(f'http://{cameraIPAddress}/video')
 
-default = 'haarcascade_frontalface_default.xml'
-faceProfile = 'haarcascade_profileface.xml'
+default = 'faceData/haarcascade_frontalface_default.xml'
+faceProfile = 'faceData/haarcascade_profileface.xml'
 faceCascade = cv2.CascadeClassifier(default)
+
 
 while(True):
 	ret, frame = capturePort.read()

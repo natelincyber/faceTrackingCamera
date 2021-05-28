@@ -18,9 +18,9 @@ capturePort = cv2.VideoCapture(f'http://{cameraIPAddress}/video')
 print(f"connected to: {cameraIPAddress}")
 
 targetZoom = int(input('zoom: '))
+print(ipcam)
 
-
-faceCascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+faceCascade = cv2.CascadeClassifier('faceData/haarcascade_frontalface_default.xml')
 ipcam.zoom(0)
 
 while(True):
