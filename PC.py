@@ -5,7 +5,7 @@ from _thread import *
 # servo without sticker - 15-180 degrees of rotation
 
 HOST = '192.168.0.109'  # The server's hostname or IP address
-PORT = 12345            # The port used by the server
+PORT = 2468            # The port used by the server
 
 
 os.system('cls' if os.name == 'nt' else 'clear')
@@ -19,6 +19,9 @@ print(f"connected to: {cameraIPAddress}")
 
 # load data for face detection model
 faceCascade = cv2.CascadeClassifier('faceData/haarcascade_frontalface_default.xml')
+font = cv2.FONT_HERSHEY_SIMPLEX
+color = (255,0,0)
+thickness = 1
 
 # connect to raspberry pi for remote data transfer
 try:
@@ -34,23 +37,25 @@ except socket.error:
 ipcam = IPWEBCAM(cameraIPAddress)
 resolution = input("set resolution (0-8): ")
 ipcam.set_resolution(resolution)
+ipcam.zoom(0)
 
 if resolution == 0:
     s.sendall('res0')
 elif resolution == 1:
     s.sendall('res1')
 else:
-    width = ipcam.resolutions[resolution][0:3]
-    height = ipcam.resolutions[resolution][4:]
+    height = ipcam.resolutions[resolution][0:3]
+    width = ipcam.resolutions[resolution][4:]
 
 s.sendall(str.encode('res' + width + height))
 
 
-def imageHandler(x, y): # handles remote data transfer
-    s.sendall(str.encode(str(int(x)) + ' ' + str(int(y))))
+def imageHandler(x, y, w, h): # handles remote data transfer
+    s.sendall(str.encode(str(int(x)) + ' ' + str(int(y)) + ' ' + str(int(w)) + ' ' + str(int(h))))
 
 
 while(True):
+
     ret, frame = capturePort.read()
 
     try:
@@ -59,20 +64,26 @@ while(True):
     except cv2.error as e:
         s.sendall(str.encode('close'))
         input("connection to ipcam lost. press enter to exit")
-        sys.exit()
+        break
 
 
     for x, y, w, h, in faces:
         cv2.rectangle(frame, (x,y), (x+w, y+h), (255, 0, 0), 2)
         roi_gray = gray[y:y+h, x:x+w]
         roi_color = frame[y:y+h, x:x+w]
+
+        cords = str(x) +  ', ' + str(y)
+
+        cv2.putText(frame, cords, (x,y+1), font, 0.5, color, thickness, cv2.LINE_AA)
         
-        start_new_thread(imageHandler, (x, y))
+        start_new_thread(imageHandler, (x, y, w, h))
 
     if keyboard.is_pressed('q'):
+        
         print('stopping server and closing the program...')
         s.sendall(str.encode('stop'))
         break
+    
 
     cv2.imshow('video', frame)
 
