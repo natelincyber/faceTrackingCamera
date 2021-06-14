@@ -51,7 +51,9 @@ s.sendall(str.encode('res' + width + height))
 
 
 def imageHandler(x, y, w, h): # handles remote data transfer
+    time.sleep(0.75)
     s.sendall(str.encode(str(int(x)) + ' ' + str(int(y)) + ' ' + str(int(w)) + ' ' + str(int(h))))
+    
 
 
 while(True):
@@ -83,6 +85,10 @@ while(True):
         print('stopping server and closing the program...')
         s.sendall(str.encode('stop'))
         break
+
+    if keyboard.is_pressed('r'):
+        print('recalibrating')
+        s.sendall(str.encode('reset'))
     
 
     cv2.imshow('video', frame)
